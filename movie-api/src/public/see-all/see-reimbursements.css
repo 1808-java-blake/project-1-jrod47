@@ -104,3 +104,11 @@ body {
 .mastfoot {
   color: rgba(255, 255, 255, .5);
 }
+
+/*
+ * Reimbursement Table
+ */
+
+ #reimbursement-table-container {
+    margin-top: 2.5em;
+  }
