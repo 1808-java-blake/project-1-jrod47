@@ -20,16 +20,37 @@ export async function findAll(): Promise<Reimbursement[]> {
  * Retreive a movie by its id
  * @param id 
  */
-export async function findById(id: number): Promise<Reimbursement> {
+export async function findByReimbursementId(id: number): Promise<Reimbursement> {
   const client = await connectionPool.connect();
   try {
     const resp = await client.query('SELECT * FROM project1.ers_reimbursement WHERE reimb_id = $1', [id]);
-    let reimbursement: SqlReimbursement = resp.rows[0];
-    if (reimbursement !== undefined) {
-      return reimbursementConverter(reimbursement);
-    } else {
-      return undefined;
+ 
+    let reimbursement = new Reimbursement();
+    if(resp.rows.length !== 0) {
+    reimbursement = resp.rows[0];
+    return reimbursement;
+  }
+  return undefined;
+} finally {
+client.release();
+}
+}
+
+/**
+ * Retreive a movie by its id
+ * @param id 
+ */
+export async function findByAuthorId(id: number): Promise<Reimbursement[]> {
+  const client = await connectionPool.connect();
+  try {
+    const resp = await client.query('SELECT * FROM project1.ers_reimbursement WHERE reimb_author_id = $1', [id]);
+  
+    const reimbursement = [];
+    resp.rows.forEach((reimb_result) => {
+      reimbursement.push(reimb_result);
     }
+    )
+    return reimbursement;
   } finally {
     client.release();
   }

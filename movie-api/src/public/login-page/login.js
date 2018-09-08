@@ -27,7 +27,7 @@ function login(event) {
     })
     .then(resp => {
       localStorage.setItem('user', JSON.stringify(resp));
-      window.location = 'http://localhost:3000/home/home.html';
+      window.location = 'http://localhost:3000/home-page/home-page.html';
     })
     .catch(err => {
       console.log(err);

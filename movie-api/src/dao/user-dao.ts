@@ -50,12 +50,11 @@ export async function findById(id: number): Promise<User> {
         LEFT JOIN project1.ers_reimbursement
         ON (ers_user_id = reimb_author_id)
         WHERE ers_user_id = $1`, [id]);
-        const user = userConverter(resp.rows[0]); // get the user data from first row
-        // get the movies from all the rows
-        resp.rows.forEach((reimbursement) => {
-          reimbursement.reimb_id && user.reimbursement.push(reimbursementConverter(reimbursement));
-        })
-        return user;
+        let user = new User();
+        if(resp.rows.length !== 0) {
+        user = resp.rows[0];
+      }
+      return user;
   } finally {
     client.release();
   }
@@ -72,10 +71,12 @@ export async function findByUsernameAndPassword(username: string, password: stri
       `SELECT * FROM project1.ers_users u
         WHERE u.ers_username = $1
         AND u.ers_password = $2`, [username, password]);
+        let user = new User();
         if(resp.rows.length !== 0) {
-          return userConverter(resp.rows[0]); // get the user data from first row
-        }
-        return null;
+        user = resp.rows[0];
+        return user;
+      }
+      return undefined;
   } finally {
     client.release();
   }

@@ -24,11 +24,30 @@ reimbursementRouter.get('', [
 /**
  * Find movie by id
  */
+reimbursementRouter.get('/reimbursements/:id', async (req, resp) => {
+  const id = +req.params.id; // convert the id to a number
+  console.log(`retreiving movie with id  ${id}`)
+  try {
+    let reimbursement = await reimbursementDao.findByReimbursementId(id);
+    if (reimbursement !== undefined) {
+      resp.json(reimbursement);
+    } else {
+      resp.sendStatus(400);
+    }
+  } catch (err) {
+    console.log(err);
+    resp.sendStatus(500);
+  }
+});
+
+/**
+ * Find movie by id
+ */
 reimbursementRouter.get('/:id', async (req, resp) => {
   const id = +req.params.id; // convert the id to a number
   console.log(`retreiving movie with id  ${id}`)
   try {
-    let reimbursement = await reimbursementDao.findById(id);
+    let reimbursement = await reimbursementDao.findByAuthorId(id);
     if (reimbursement !== undefined) {
       resp.json(reimbursement);
     } else {
