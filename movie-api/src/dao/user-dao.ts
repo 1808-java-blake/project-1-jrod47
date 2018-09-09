@@ -88,7 +88,6 @@ export async function findByUsernameAndPassword(username: string, password: stri
  * @param user 
  */
 export async function createUser(user: User): Promise<number> {
-  console.log(user.username);
   const client = await connectionPool.connect();
   try {
     const resp = await client.query(

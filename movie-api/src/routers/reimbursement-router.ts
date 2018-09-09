@@ -59,6 +59,21 @@ reimbursementRouter.get('/:id', async (req, resp) => {
   }
 });
 
+/**
+ * Update Reimbursement by id
+ */
+reimbursementRouter.put('', 
+  //authMiddleware('admin'),
+  async (req, resp) => {
+    try {
+      const id = await reimbursementDao.updateReimbursement(req.body);
+      resp.status(201);
+      resp.json(id);
+    } catch (err) {
+      console.log(err);
+      resp.sendStatus(500);
+    }
+  })
 
 /**
  * Create Movie

@@ -42,6 +42,7 @@ function createReimbursement(event) {
     })
     .then(resp => resp.json())
     .then(resp => {
+      localStorage.setItem('reimbursement', JSON.stringify(resp));
       window.location = 'http://localhost:3000/see-all/see-reimbursements.html';
     })
     .catch(err => {
