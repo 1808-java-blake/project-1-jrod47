@@ -3,14 +3,14 @@ import express from 'express';
 import path from 'path';
 import bodyParser from 'body-parser';
 import session from 'express-session';
-//import { movieRouter } from './routers/movie-router';
 import { userRouter } from './routers/user-router';
+import { reimbursementRouter } from './routers/reimbursement-router';
 
 // create the app object from express
 const app = express();
 
 // set the port
-const port = process.env.PORT || 3000; // will use port from computers environment variables or 3000 if there is none
+const port = 3000; // will use port from computers environment variables or 3000 if there is none
 app.set('port', port);
 
 const sess = {
@@ -42,10 +42,18 @@ app.use(
 // use the body parser to convert request json
 app.use(bodyParser.json());
 
+// allows cors headers
+app.use((req, resp, next) => {
+  resp.header("Access-Control-Allow-Origin", "http://localhost:3000");
+  resp.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+  resp.header("Access-Control-Allow-Credentials", "true");
+  next();
+})
+
 /*********************************************************************************************
  * API Routers
  ********************************************************************************************/
-//app.use('/movies', movieRouter);
+app.use('/reimbursement', reimbursementRouter);
 app.use('/users', userRouter);
 
 const server = app.listen(port, () => {

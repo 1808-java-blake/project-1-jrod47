@@ -1,0 +1,47 @@
+PROJECT 1 SQL
+
+CREATE SCHEMA project1;
+
+SET SCHEMA 'project1';
+
+CREATE TABLE ers_users(
+	ers_user_id SERIAL PRIMARY KEY NOT NULL,
+	ers_username VARCHAR(50) UNIQUE NOT NULL,
+	ers_password VARCHAR(50) NOT NULL,
+	user_first_name VARCHAR(100) NOT NULL,
+	user_last_name VARCHAR(100) NOT NULL,
+	user_email VARCHAR(150) NOT NULL,
+	user_role VARCHAR(15) NOT NULL
+);
+
+CREATE TABLE ers_reimbursement (
+	reimb_id SERIAL PRIMARY KEY NOT NULL,
+	reimb_amount FLOAT NOT NULL,
+	reimb_status VARCHAR (15) NOT NULL,
+	reimb_type VARCHAR(15) NOT NULL,
+	reimb_description VARCHAR(250) NOT NULL,
+	reimb_submitted TIMESTAMP NOT NULL,
+	reimb_author_id INTEGER REFERENCES project1.ers_users(ers_user_id),
+	reimb_resolved TIMESTAMP NOT NULL,
+	reimb_resolver_id INTEGER REFERENCES project1.ers_users(ers_user_id)
+);
+
+
+
+-- CREATE TABLE ers_reimbursement_status(
+-- 	reimb status_id SERIAL PRIMARY KEY NOT NULL,
+-- 	reimb_status VARCHAR(10) NOT NULL,
+-- 	reimb_status_pk REFERENCES project1.ers_reimbursment(reim_status_id)
+-- );
+
+-- CREATE TABLE ers_reimbursement_type(
+-- 	reimb_type_id SERIAL PRIMARY KEY NOT NULL,
+-- 	reimb_type VARCHAR() NOT NULL,
+-- 	reimb_type_pk REFERENCES project1.ers_reimbursment(reim_type_id)
+-- );
+
+-- CREATE TABLE ers_user_roles(
+-- 	ers_user_role_id SERIAL PRIMARY KEY NOT NULL,
+-- 	user_role VARCHAR(10) NOT NULL,
+-- 	ers_user_roles_pk REFERENCES project1.ers_users(user_role_id)
+-- );

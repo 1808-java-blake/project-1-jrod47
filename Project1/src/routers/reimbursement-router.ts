@@ -21,14 +21,26 @@ reimbursementRouter.get('', [
     }
   }]);
 
+  reimbursementRouter.get('/pending', [
+    //authMiddleware('admin', 'customer'),
+    async (req: Request, resp: Response) => {
+      try {
+        console.log('Retrieving All Reimbursements');
+        let reimbursement = await reimbursementDao.findAllPending();
+        resp.json(reimbursement);
+      } catch (err) {
+        resp.sendStatus(500);
+      }
+    }]);
+
 /**
  * Find movie by id
  */
-reimbursementRouter.get('/:id', async (req, resp) => {
+reimbursementRouter.get('/reimbursements/:id', async (req, resp) => {
   const id = +req.params.id; // convert the id to a number
   console.log(`retreiving movie with id  ${id}`)
   try {
-    let reimbursement = await reimbursementDao.findById(id);
+    let reimbursement = await reimbursementDao.findByReimbursementId(id);
     if (reimbursement !== undefined) {
       resp.json(reimbursement);
     } else {
@@ -40,6 +52,40 @@ reimbursementRouter.get('/:id', async (req, resp) => {
   }
 });
 
+/**
+ * Find movie by id
+ */
+reimbursementRouter.get('/:id', async (req, resp) => {
+  const id = +req.params.id; // convert the id to a number
+  console.log(`retreiving movie with id  ${id}`)
+  try {
+    let reimbursement = await reimbursementDao.findByAuthorId(id);
+    if (reimbursement !== undefined) {
+      resp.json(reimbursement);
+    } else {
+      resp.sendStatus(400);
+    }
+  } catch (err) {
+    console.log(err);
+    resp.sendStatus(500);
+  }
+});
+
+/**
+ * Update Reimbursement by id
+ */
+reimbursementRouter.put('', 
+  //authMiddleware('admin'),
+  async (req, resp) => {
+    try {
+      const id = await reimbursementDao.updateReimbursement(req.body);
+      resp.status(201);
+      resp.json(id);
+    } catch (err) {
+      console.log(err);
+      resp.sendStatus(500);
+    }
+  })
 
 /**
  * Create Movie

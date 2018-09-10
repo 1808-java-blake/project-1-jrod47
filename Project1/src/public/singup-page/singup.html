@@ -13,7 +13,7 @@
     <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
 
     <!-- Custom styles for this template -->
-    <link href="signin.css" rel="stylesheet">
+    <link href="singup.css" rel="stylesheet">
   </head>
 
   <body class="text-center signin-container">
@@ -27,17 +27,21 @@
             </div>
         
             <!-- Login Form -->
-            <form class="form-signin" onsubmit="login(event)">
-                <h1 class="h3 mb-3 font-weight-normal">Please Login</h1>
-                <input type="text" id="inputUsername" class="fadeIn second"  placeholder="username" required>
-                <input type="password" id="inputPassword" class="fadeIn third"  placeholder="password" required>
-                <button class="btn btn-primary" type="submit">Login</button><br/>
+            <form onsubmit="createUser(event)">
+        
+                <h1 class="h3 mb-3 font-weight-normal">Please Sign Up</h1>
+                <input type="text" id="username" class="fadeIn second"  placeholder="Username:" required>
+                <input type="password" id="password" class="fadeIn third"  placeholder="Password:" required>
+                <input type="text" id="firstname" class="fadeIn second"  placeholder="Firstname:" required>
+                <input type="text" id="lastname" class="fadeIn third"  placeholder="Lastname:" required>
+                <input type="email" id="email" class="fadeIn third"  placeholder="Email:" required>
+                <button class="btn btn-primary" type="submit">Sing Up</button><br/>
                 <p id="error-message"></p>
               </form>
         
             <!-- Remind Passowrd -->
             <div id="formFooter">
-                <a href="http://localhost:3000/singup-page/singup.html">Don't have an Account?</a>
+                <a href="http://localhost:3000/login-page/login.html">Already have an Account?</a>
             </div>
         
           </div>
@@ -45,6 +49,6 @@
 
 <script src="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
 <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-    <script src="login.js"></script>
+    <script src="singup.js"></script>
   </body>
 </html>

@@ -12,8 +12,8 @@ export async function findAll(): Promise<User[]> {
     const resp = await client.query(
    
         `SELECT * FROM project1.ers_users
-        FULL JOIN project1.ers_reimbursement
-        USING (user_id)
+         LEFT JOIN project1.ers_reimbursement
+         ON (ers_user_id = reimb_author_id)
         `);
 
     // extract the users and their movies from the result set
@@ -21,8 +21,8 @@ export async function findAll(): Promise<User[]> {
     resp.rows.forEach((user_reimbursement_result) => {
       const reimbursement = reimbursementConverter(user_reimbursement_result);
       const exists = users.some( existingUser => {
-        if(user_reimbursement_result.user_id === existingUser.id) {
-          reimbursement.id && existingUser.movies.push(reimbursement);
+        if(user_reimbursement_result.ers_user_id === existingUser.id) {
+          reimbursement.id && existingUser.reimbursement.push(reimbursement);
           return true;
         }
       })
@@ -46,16 +46,15 @@ export async function findById(id: number): Promise<User> {
   const client = await connectionPool.connect();
   try {
     const resp = await client.query(
-      `SELECT * FROM project1.ers_users u
-        LEFT JOIN project1.ers_reimbursements
-        USING (reimb_author_id)
-        WHERE u.user_id = $1`, [id]);
-        const user = userConverter(resp.rows[0]); // get the user data from first row
-        // get the movies from all the rows
-        resp.rows.forEach((reimbursement) => {
-          reimbursement.reimb_id && user.reimbursement.push(reimbursementConverter(reimbursement));
-        })
-        return user;
+      `SELECT * FROM project1.ers_users 
+        LEFT JOIN project1.ers_reimbursement
+        ON (ers_user_id = reimb_author_id)
+        WHERE ers_user_id = $1`, [id]);
+        let user = new User();
+        if(resp.rows.length !== 0) {
+        user = resp.rows[0];
+      }
+      return user;
   } finally {
     client.release();
   }
@@ -72,10 +71,12 @@ export async function findByUsernameAndPassword(username: string, password: stri
       `SELECT * FROM project1.ers_users u
         WHERE u.ers_username = $1
         AND u.ers_password = $2`, [username, password]);
+        let user = new User();
         if(resp.rows.length !== 0) {
-          return userConverter(resp.rows[0]); // get the user data from first row
-        }
-        return null;
+        user = resp.rows[0];
+        return user;
+      }
+      return undefined;
   } finally {
     client.release();
   }
@@ -86,15 +87,15 @@ export async function findByUsernameAndPassword(username: string, password: stri
  * Add a new user to the DB
  * @param user 
  */
-export async function create(user: User): Promise<number> {
+export async function createUser(user: User): Promise<number> {
   const client = await connectionPool.connect();
   try {
     const resp = await client.query(
-      `INSERT INTO movies.app_users 
-        (ers_username, ers_password, user_first_name, user_last_name, user_email, ers_role)
-        VALUES ($1, $2, $3, $4, $5, $6) 
-        RETURNING user_id`, [user.username, user.password, user.firstname, user.lastname, user.email, user.role]);
-    return resp.rows[0].user_id;
+      `INSERT INTO project1.ers_users 
+          (ers_username, ers_password, user_first_name, user_last_name, user_email, user_role)
+             VALUES ($1, $2, $3, $4, $5, $6) 
+        RETURNING ers_user_id`, [user.username, user.password, user.firstname, user.lastname, user.email, user.role]);
+    return resp.rows[0].ers_user_id;
   } finally {
     client.release();
   }
